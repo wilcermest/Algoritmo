@@ -38,7 +38,7 @@ def predecir_texto(modelo, texto):
     """
     Realiza una predicción sobre el texto ingresado.
     Retorna la categoría y la confianza.
-    Si la confianza es menor al 60%, clasifica como 'otros'.
+    Si la confianza es menor al 60%, clasifica como 'inofensivo'.
     """
     # Validar entrada vacía
     if not texto or texto.strip() == '':
@@ -54,9 +54,9 @@ def predecir_texto(modelo, texto):
         probabilidades = modelo.predict_proba([texto_limpio])[0]
         confianza = obtener_probabilidad_maxima(probabilidades, modelo.classes_)
         
-        # Aplicar umbral de confianza: si es menor al 50%, clasificar como 'otros'
+        # Aplicar umbral de confianza: si es menor al 50%, clasificar como 'inofensivo'
         if confianza < 0.50:
-            categoria = 'otros'
+            categoria = 'inofensivo'
         
         return categoria, confianza
     except Exception as e:
@@ -103,7 +103,7 @@ def main():
     print("  - amenaza")
     print("  - discurso_odio")
     print("  - hecho_delictivo")
-    print("  - otros")
+    print("  - inofensivo")
     print("\nEscribe 'salir' para terminar\n")
     
     # Loop de predicciones

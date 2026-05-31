@@ -1,36 +1,71 @@
-# Clasificador de Texto con scikit-learn
+# Modelo de Clasificación de Textos - Fiscalía General de la República de Cuba
 
-Proyecto simple y funcional para clasificación de textos en 4 categorías usando técnicas clásicas de NLP.
+Clasificador automático de textos basado en Regresión Logística y TF-IDF para la identificación de contenidos de alto riesgo (amenazas, discurso de odio, hechos delictivos) en plataformas digitales.
 
-## Descripción
+## 🎓 Información Académica
 
-Este proyecto implementa un clasificador de texto capaz de detectar y categorizar textos en una de estas 4 categorías:
+Este proyecto es resultado de la tesis de diploma:
 
-- **amenaza**: textos que contienen amenazas o coerción
-- **discurso_odio**: textos con contenido de odio o discriminación
-- **hecho_delictivo**: textos que describen actividades delictivas
-- **otros**: quejas, comentarios generales u otros contenidos
+**"Modelo de clasificación de textos aplicado a la Fiscalía General de la República de Cuba"**
 
-## Estructura del Proyecto
+- **Autor**: Wilbert Cereijo Mestre
+- **Tutores**: Ing. Pedro Alejandro Cabrera Enríquez, DrC. Yamil Sánchez Castellanos
+- **Cotutor**: Ing. Lisandra Valdivia Torres
+- **Institución**: Universidad de las Ciencias Informáticas (UCI)
+- **Facultad**: Informática Organizacional
+- **Fecha**: Mayo 2026
+
+## 📌 Descripción
+
+Este clasificador identifica y categoriza textos provenientes de plataformas digitales en **4 categorías**:
+
+- **amenaza**: Textos que contienen amenazas o coerción directa
+- **discurso_odio**: Contenido discriminatorio o de rechazo hacia grupos
+- **hecho_delictivo**: Textos que describen o reportan actividades potencialmente delictivas
+- **inofensivo**: Planteamientos ciudadanos generales, consultas, sugerencias
+
+### 📊 Resultados Experimentales
+
+El modelo alcanzó un **desempeño excelente** en validación:
+
+| Métrica | Valor |
+|---------|-------|
+| **Exactitud (Accuracy)** | **95.78%** |
+| **Precisión (promedio)** | **0.96** |
+| **Exhaustividad (Recall promedio)** | **0.96** |
+| **F1-Score (promedio)** | **0.96** |
+
+**Por categoría:**
+
+| Categoría | Precisión | Exhaustividad | F1-Score | Soporte |
+|-----------|-----------|---------------|----------|---------|
+| amenaza | 0.96 | 0.97 | 0.97 | 159 |
+| discurso_odio | 0.95 | 0.96 | 0.96 | 255 |
+| hecho_delictivo | 0.97 | 0.97 | 0.97 | 247 |
+| inofensivo | 0.95 | 0.93 | 0.94 | 240 |
+
+**Total**: 901 muestras de prueba
+
+## 📂 Estructura del Proyecto
 
 ```
 .
 ├── data/
-│   └── datos_entrenamiento.csv    # Dataset de entrenamiento
+│   └── datos_entrenamiento.csv      # Dataset de 4502 muestras etiquetadas
 ├── models/
-│   └── modelo_clasificador.pkl    # Modelo entrenado (generado después de train.py)
-├── train.py                        # Script de entrenamiento
-├── predict.py                      # Script de predicción
-├── requirements.txt                # Dependencias de Python
-└── README.md                       # Este archivo
+│   └── modelo_clasificador.pkl      # Modelo entrenado (generado por train.py)
+├── train.py                         # Script de entrenamiento
+├── predict.py                       # Script de predicción interactiva
+├── requirements.txt                 # Dependencias Python
+└── README.md                        # Este archivo
 ```
 
-## Requisitos
+## 🔧 Requisitos
 
-- Python 3.7 o superior
+- Python 3.13.3 o superior
 - pip (gestor de paquetes de Python)
 
-## Instalación
+## 📦 Instalación
 
 ### Paso 1: Instalar dependencias
 
@@ -38,57 +73,59 @@ Este proyecto implementa un clasificador de texto capaz de detectar y categoriza
 pip install -r requirements.txt
 ```
 
-Las librerías requeridas son:
-- pandas (>= 1.3.0)
-- scikit-learn (>= 1.0.0)
-- joblib (>= 1.1.0)
+**Librerías requeridas:**
+- pandas (>= 1.3.0) - Manipulación de datos
+- scikit-learn (>= 1.0.0) - Aprendizaje automático y NLP
+- joblib (>= 1.1.0) - Persistencia de modelos
 
-## Dataset
+## 📊 Dataset
 
 ### Ubicación
-El archivo CSV debe estar en la carpeta `data/` en el mismo directorio que los scripts.
+El archivo CSV debe estar en la carpeta `data/` con el nombre `datos_entrenamiento.csv`.
 
 ### Formato esperado
 
-El archivo CSV debe tener exactamente estas columnas:
-
 | Columna | Tipo | Descripción |
 |---------|------|-------------|
-| id | entero | Identificador único del registro |
-| texto | string | Texto libre a clasificar |
-| categoria | string | Etiqueta de la categoría (amenaza, discurso_odio, hecho_delictivo, otros) |
+| id | int | Identificador único del registro |
+| texto | string | Contenido textual a clasificar |
+| categoria | string | Etiqueta: amenaza, discurso_odio, hecho_delictivo, inofensivo |
 
 ### Ejemplo de datos
 
-```
+```csv
 id,texto,categoria
-1,No vuelvas a hacer eso o te arrepentirás,amenaza
-2,Esos gusanos no merecen vivir,discurso_odio
-3,Vendimos 50 kilogramos de cocaína el viernes,hecho_delictivo
-4,Me gustaría que me devuelvan el dinero de mi compra,otros
+1,te voy a hacer daño,amenaza
+2,esa gente de tu raza no sirve para nada,discurso_odio
+3,me hackearon la cuenta de correo,hecho_delictivo
+4,necesito información sobre un trámite,inofensivo
 ```
 
-## Uso
+### Estadísticas del Dataset Entrenamiento
+
+- **Total de muestras**: 4502 (después de limpieza)
+- **División**: 80% entrenamiento (3601), 20% prueba (901)
+- **Distribución de clases**: Balanceada
+
+## 🚀 Uso
 
 ### 1. Entrenar el modelo
-
-Para entrenar el modelo, ejecuta:
 
 ```bash
 python train.py
 ```
 
-**Proceso:**
-1. Busca automáticamente el CSV en la carpeta `data/`
-2. Limpia los datos (minúsculas, espacios, duplicados, nulos)
-3. Divide datos en 80% entrenamiento y 20% prueba
-4. Entrena un modelo usando:
-   - Vectorización TF-IDF (n-gramas 1-2)
-   - Regresión Logística con pesos balanceados
-5. Muestra métricas de evaluación (accuracy, precision, recall, F1)
-6. Guarda el modelo en `models/modelo_clasificador.pkl`
+**Proceso automático:**
+1. ✅ Busca el CSV en `data/`
+2. ✅ Limpia datos (minúsculas, espacios, duplicados, nulos)
+3. ✅ Aplica preprocesamiento de NLP
+4. ✅ Vectoriza textos con TF-IDF (unigramas + bigramas)
+5. ✅ Entrena modelo con Regresión Logística
+6. ✅ Evalúa con métricas estándar
+7. ✅ Guarda modelo en `models/modelo_clasificador.pkl`
 
-**Salida esperada EJEMPLO:**
+**Salida esperada:**
+
 ```
 ============================================================
 CLASIFICADOR DE TEXTO - ENTRENAMIENTO
@@ -96,56 +133,56 @@ CLASIFICADOR DE TEXTO - ENTRENAMIENTO
 Buscando archivo CSV...
 Archivo encontrado: ./data/datos_entrenamiento.csv
 
-
 Columnas: ['id', 'texto', 'categoria']
 
 === LIMPIEZA DE DATOS ===
-Filas iniciales: 400
-Filas después de eliminar nulos: 400
-Filas después de eliminar duplicados: 398
+Filas iniciales: 4502
+Filas después de eliminar nulos: 4502
+Filas después de eliminar duplicados: 4502
 
 === DISTRIBUCIÓN DE CLASES ===
-categoria
-otros               105
-amenaza              98
-discurso_odio        95
-hecho_delictivo      100
+amenaza              792
+discurso_odio      1276
+hecho_delictivo    1177
+inofensivo          1257
 
 === DIVISIÓN TRAIN/TEST ===
-Conjunto de entrenamiento: 318 muestras
-Conjunto de prueba: 80 muestras
+Conjunto de entrenamiento: 3601 muestras
+Conjunto de prueba: 901 muestras
 
 === ENTRENAMIENTO DEL MODELO ===
-Entrenando modelo...
+Entrenando modelo con Regresión Logística...
 Modelo entrenado exitosamente
 
 === EVALUACIÓN DEL MODELO ===
-Accuracy: 0.8750
+Accuracy: 0.9578
 
 Reporte de Clasificación:
               precision    recall  f1-score   support
-...
+        amenaza       0.96      0.97      0.97       159
+    discurso_odio      0.95      0.96      0.96       255
+  hecho_delictivo      0.97      0.97      0.97       247
+      inofensivo       0.95      0.93      0.94       240
+
+      macro avg       0.96      0.96      0.96       901
+   weighted avg       0.96      0.96      0.96       901
 
 Modelo guardado en: ./models/modelo_clasificador.pkl
-
-============================================================
-ENTRENAMIENTO COMPLETADO EXITOSAMENTE
 ============================================================
 ```
 
 ### 2. Hacer predicciones
 
-Para usar el modelo entrenado y hacer predicciones, ejecuta:
-
 ```bash
 python predict.py
 ```
 
-**Proceso:**
-1. Carga el modelo entrenado desde `models/modelo_clasificador.pkl`
-2. Permite ingresar textos interactivamente
-3. Predice la categoría y muestra la confianza en porcentaje
-4. Repite hasta que escribas `salir`
+**Características:**
+- ✅ Carga modelo entrenado automáticamente
+- ✅ Interfaz interactiva para ingresar textos
+- ✅ Muestra categoría predicha y confianza (%)
+- ✅ Umbral de confianza del 50% para alertar casos ambiguos
+- ✅ Escribe `salir` para terminar
 
 **Ejemplo de uso:**
 
@@ -157,99 +194,160 @@ Cargando modelo...
 Modelo cargado correctamente
 
 Categorías disponibles:
-  - amenaza
-  - discurso_odio
-  - hecho_delictivo
-  - otros
+  • amenaza: Amenazas o coerción
+  • discurso_odio: Contenido discriminatorio
+  • hecho_delictivo: Actividades delictivas reportadas
+  • inofensivo: Consultas y planteamientos generales
 
 Escribe 'salir' para terminar
 
-Ingresa un texto para clasificar: no hagas eso o te mataremos
-
+Ingresa un texto para clasificar: te voy a hacer daño
 ============================================================
 RESULTADO DE LA PREDICCIÓN
 ============================================================
-Texto ingresado: no hagas eso o te mataremos
-Categoría predicha: amenaza
-Confianza: 92.45%
+Texto: te voy a hacer daño
+Categoría: amenaza
+Confianza: 96.78%
 ============================================================
 
-Ingresa un texto para clasificar: quiero reclamar sobre mi pedido
-
+Ingresa un texto para clasificar: necesito información
 ============================================================
 RESULTADO DE LA PREDICCIÓN
 ============================================================
-Texto ingresado: quiero reclamar sobre mi pedido
-Categoría predicha: otros
-Confianza: 78.32%
+Texto: necesito información
+Categoría: inofensivo
+Confianza: 89.23%
 ============================================================
-
-Ingresa un texto para clasificar: salir
-
-¡Hasta luego!
 ```
 
-## Configuración del Modelo
+## ⚙️ Configuración del Modelo
+
+### Metodología: KDD (Knowledge Discovery in Databases)
+
+El desarrollo siguió las etapas estándar de KDD:
+
+1. **Selección de datos**: Dataset propio de 4502 textos
+2. **Preprocesamiento**: Limpieza y normalización
+3. **Transformación**: Vectorización TF-IDF
+4. **Minería de datos**: Entrenamiento Regresión Logística
+5. **Evaluación**: Validación con métricas estándar
 
 ### TfidfVectorizer
-- **ngram_range=(1,2)**: Considera palabras individuales y pares de palabras
-- **min_df=2**: Ignora términos que aparecen en menos de 2 documentos
-- **max_df=0.95**: Ignora términos que aparecen en más del 95% de los documentos
-- **max_features=5000**: Limita a 5000 características
+
+```python
+TfidfVectorizer(
+    ngram_range=(1, 2),      # Unigramas + bigramas
+    min_df=2,                # Min 2 documentos
+    max_df=0.95,             # Max 95% documentos
+    max_features=5000        # 5000 características
+)
+```
 
 ### LogisticRegression
-- **class_weight='balanced'**: Pondera automáticamente según la frecuencia de clases
-- **max_iter=2000**: Número máximo de iteraciones de optimización
-- **solver='lbfgs'**: Algoritmo de optimización (recomendado para datasets pequeños)
 
-## Limpieza de Datos
+```python
+LogisticRegression(
+    class_weight='balanced', # Equilibra clases desbalanceadas
+    max_iter=2000,           # Iteraciones máximas
+    solver='lbfgs',          # Optimizador
+    random_state=42          # Reproducibilidad
+)
+```
 
-El script de entrenamiento aplicará automáticamente:
+## 🧹 Preprocesamiento de Datos
 
-1. **Eliminar valores nulos**: Remueve filas con texto o categoría vacíos
-2. **Convertir a minúsculas**: Normaliza el texto
-3. **Eliminar espacios extra**: Limpia espacios al inicio y final
-4. **Eliminar duplicados**: Mantiene solo la primera ocurrencia de textos duplicados
+El script aplica automáticamente:
 
-## Manejo de Errores
+1. ✅ **Eliminación de nulos**: Remueve registros incompletos
+2. ✅ **Minúsculas**: Normaliza texto (`"PELIGRO"` → `"peligro"`)
+3. ✅ **Limpieza de espacios**: Elimina espacios al inicio/final
+4. ✅ **Eliminación de duplicados**: Mantiene primera ocurrencia
+5. ✅ **Tokenización**: Divide en palabras/bigramas
 
-### Error: "La carpeta 'data' no existe"
-Verifica que exista la carpeta `data/` en el mismo directorio que los scripts.
+## 📈 Tecnologías Utilizadas
 
-### Error: "No se encontró ningún archivo CSV"
-Coloca el archivo CSV en la carpeta `data/`.
+- **Python 3.13.3**: Lenguaje de programación
+- **pandas 1.3.0+**: Lectura y manipulación de datos CSV
+- **scikit-learn 1.0.0+**: ML, NLP, métricas de evaluación
+- **joblib 1.1.0+**: Persistencia y carga de modelos
+- **Metodología KDD**: Estructura de desarrollo
 
-### Error: "El modelo no existe"
-Asegúrate de haber ejecutado `python train.py` primero para generar el modelo.
+## 🎯 Rendimiento Computacional
 
-## Tecnologías Utilizadas
+- **Entrenamiento**: < 10 segundos en máquina estándar
+- **Predicción por texto**: < 0.1 segundos (instantáneo)
+- **Memoria requerida**: ~100 MB
 
-- **pandas**: Lectura y manipulación de datos
-- **scikit-learn**: Pipeline, TfidfVectorizer, LogisticRegression, métricas
-- **joblib**: Serialización y carga del modelo
+## ⚠️ Manejo de Errores
 
-## Notas Importantes
+### "La carpeta 'data' no existe"
+```bash
+mkdir data
+```
 
-- El modelo se guarda como archivo pickle (`.pkl`). Mantén este archivo para hacer predicciones futuras.
-- La primera ejecución de `train.py` puede tomar algunos segundos.
-- Las predicciones son determinísticas (mismo texto siempre da mismo resultado).
-- El modelo está optimizado para datasets pequeños a medianos (~400 muestras).
+### "No se encontró ningún archivo CSV"
+Verifica que el archivo esté en `data/datos_entrenamiento.csv`
 
-## Solución de Problemas
+### "El modelo no existe"
+Ejecuta primero: `python train.py`
 
-**P: ¿Puedo usar diferentes formatos de datos?**
-R: No, el proyecto está diseñado específicamente para CSV con las columnas especificadas.
+### "Errores de codificación UTF-8"
+Asegúrate que el CSV esté en codificación UTF-8
 
-**P: ¿Cómo puedo mejorar la precisión del modelo?**
-R: Necesitarías más datos de entrenamiento o ajustar los hiperparámetros en `train.py`.
+## 📝 Notas Importantes
 
-**P: ¿Puedo entrenar el modelo nuevamente sin perder el anterior?**
-R: Sí, pero el nuevo modelo sobrescribirá el anterior. Guarda una copia si es importante.
+- ⚠️ El modelo se sobrescribe cada vez que ejecutas `train.py`
+- ⚠️ Las predicciones son determinísticas (mismo resultado para mismo input)
+- ⚠️ El umbral de confianza del 50% ayuda a detectar casos ambiguos
+- ✅ El modelo maneja bien clases desbalanceadas con `class_weight='balanced'`
 
-## Autor
+## 🔍 Matriz de Confusión
 
-Proyecto de clasificación de texto con scikit-learn - 2026
+Del conjunto de prueba (901 muestras):
 
-## Licencia
+```
+Real / Predicho | amenaza | discurso | delictivo | inofensivo
+─────────────────────────────────────────────────────────────
+amenaza         |   155   |    1     |     0     |     3
+discurso_odio   |    1    |   246    |     3     |     5
+hecho_delictivo |    1    |    3     |    240    |     3
+inofensivo      |    4    |   10     |     4     |    222
+```
 
-Libre para uso educativo y comercial.
+**Observaciones:**
+- Principal confusión: "inofensivo" ↔ "discurso_odio" (10 casos)
+- Bajo número de falsos positivos/negativos
+- Desempeño excelente en "amenaza" y "hecho_delictivo"
+
+## 🤔 Preguntas Frecuentes
+
+**P: ¿Puedo usar otros formatos de datos?**
+R: No, solo CSV con estructura específica (id, texto, categoria).
+
+**P: ¿Cómo mejoro la precisión?**
+R: Aumenta datos de entrenamiento o ajusta hiperparámetros en `train.py`.
+
+**P: ¿Puedo integrar esto en otra aplicación?**
+R: Sí, el modelo se puede cargar e invocar desde cualquier código Python.
+
+**P: ¿Es reproducible?**
+R: Sí, usa `random_state=42` para resultados consistentes.
+
+## 📚 Referencias
+
+Cereijo Mestre, W. (2026). *Modelo de clasificación de textos aplicado a la Fiscalía General de la República de Cuba*. Tesis de Diploma, Universidad de las Ciencias Informáticas, La Habana, Cuba.
+
+## 👨‍💻 Autor Original
+
+**Wilbert Cereijo Mestre** - Desarrollo de tesis y modelo
+- Tutores: Ing. Pedro Alejandro Cabrera Enríquez, DrC. Yamil Sánchez Castellanos
+- Cotutor: Ing. Lisandra Valdivia Torres
+
+## 📄 Licencia
+
+Libre para uso educativo y en el contexto de la Fiscalía General de la República de Cuba.
+
+---
+
+**Versión del modelo**: 1.0 (Tesis 2026)  
+**Última actualización**: Mayo 2026
